@@ -9,6 +9,11 @@ import { useMyContext } from '../contexts/Auth'
 const SignUp: React.FC = () => {
 
   const { name, email, password, checkPassword } = useMyContext()
+
+  const handleSignUp = () => {
+    alert(`Name: ${name} \nEmail: ${email}`)
+  }
+
   return (
     <View className='bg-lime-100 flex flex-1 justify-center px-12 md:px-16 md:mx-96 md:my-8 md:w-96'>
       <View>
@@ -24,7 +29,7 @@ const SignUp: React.FC = () => {
 
       <View className='py-2'>
         <Pressable className='py-4 md:py-2 bg-sky-600 rounded-xl'>
-          <Text className='text-2xl font-bold text-center text-white'>Register</Text>
+          <Text onPress={handleSignUp} className='text-2xl font-bold text-center text-white'>Register</Text>
         </Pressable>
       </View>
 

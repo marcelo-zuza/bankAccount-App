@@ -13,7 +13,7 @@ interface MyContextProps {
   setCheckPassword: (newCheckPassword: string) => void;
 }
 
-const MeuContexto = createContext<MyContextProps | undefined>(undefined);
+const MyContext = createContext<MyContextProps | undefined>(undefined);
 
 interface MyContextProviderProps {
   children: ReactNode;
@@ -40,14 +40,14 @@ export const MyContextProvider: React.FC<MyContextProviderProps> = ({ children }
   };
 
   return (
-    <MeuContexto.Provider value={contextValue}>
+    <MyContext.Provider value={contextValue}>
       {children}
-    </MeuContexto.Provider>
+    </MyContext.Provider>
   );
 };
 
 export const useMyContext = () => {
-  const context = useContext(MeuContexto);
+  const context = useContext(MyContext);
   if (!context) {
     throw new Error('useMyContext deve ser usado dentro de um MyContextProvider');
   }
