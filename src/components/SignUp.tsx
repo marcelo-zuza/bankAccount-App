@@ -1,13 +1,14 @@
 import { View, Text, TextInput, Pressable } from 'react-native'
 import React, { useContext } from 'react'
-import Auth from '../contexts/Auth'
+import { useMyContext } from '../contexts/Auth'
+
+
 // #0284c7
 
 
-const SignUp = () => {
+const SignUp: React.FC = () => {
 
-  const {  } = useContext(Auth)
-
+  const { name, email, password, checkPassword } = useMyContext()
   return (
     <View className='bg-lime-100 flex flex-1 justify-center px-12 md:px-16 md:mx-96 md:my-8 md:w-96'>
       <View>

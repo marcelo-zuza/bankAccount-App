@@ -1,51 +1,55 @@
-import { View, Text } from 'react-native'
-import React, { createContext, useState } from 'react'
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-
-interface User {
-    name: string;
-    email: string;
-    password: string;
-    repeatPassword: string;
-    id: string
+interface MyContextProps {
+  id: number;
+  setId: (newId: number) => void;
+  name: string;
+  setName: (newName: string) => void;
+  email: string;
+  setEmail: (newEmail: string) => void;
+  password: string;
+  setPassword: (newPassword: string) => void;
+  checkPassword: string;
+  setCheckPassword: (newCheckPassword: string) => void;
 }
 
-interface AuthContextType {
-    user: User | null; 
-    login: (email: string, password: string) => void
+const MeuContexto = createContext<MyContextProps | undefined>(undefined);
+
+interface MyContextProviderProps {
+  children: ReactNode;
 }
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+export const MyContextProvider: React.FC<MyContextProviderProps> = ({ children }) => {
+    const [id, setId] = useState<number>(1);
+  const [name, setName] = useState<string>('Zé maria');
+  const [email, setEmail] = useState<string>('z@z.com');
+  const [password, setPassword] = useState<string>('123');
+  const [checkPassword, setCheckPassword] = useState<string>('123');
 
+  const contextValue: MyContextProps = {
+    name: name,
+    email: email,
+    password: password,
+    checkPassword: checkPassword,
+    id: id,
+    setId: setId,
+    setName: setName,
+    setEmail: setEmail,
+    setPassword: setPassword,
+    setCheckPassword: setCheckPassword
+  };
 
-const Auth = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<User>({
-        name: 'Marcelo Zuza',
-        email: 'marcelozuza@gmail.com',
-        password: '123',
-        repeatPassword: '123',
-        id: '0'
-    });
-
-    const contextValue = {
-        user,
-        login: (email: string, password: string) => {
-            setUser({
-                name: 'Marcelo Zuza',
-                email: 'marcelozuza@gmail.com',
-                password: '123',
-                repeatPassword: '123',
-                id: '0'
-            })
-        }
-    }
-     
- 
   return (
-    <AuthContext.Provider value={contextValue}>
-        {children}
-    </AuthContext.Provider>
-  )
-}
+    <MeuContexto.Provider value={contextValue}>
+      {children}
+    </MeuContexto.Provider>
+  );
+};
 
-export default Auth
+export const useMyContext = () => {
+  const context = useContext(MeuContexto);
+  if (!context) {
+    throw new Error('useMyContext deve ser usado dentro de um MyContextProvider');
+  }
+  return context;
+};
