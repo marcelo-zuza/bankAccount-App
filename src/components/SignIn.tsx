@@ -7,7 +7,7 @@ const SignIn = () => {
   const navigation = useNavigation()
 
   return (
-    <View className='flex flex-1 justify-center px-12 md:px-16 md:mx-96 md:my-8 md:border-2 border-gray-400 rounded-lg w-96'>
+    <View className='bg-lime-100 flex flex-1 justify-center px-12 md:px-16 md:mx-96 md:my-8 md:w-96'>
 
       <Text className='text-5xl font-bold text-center py-12 md:py-4'>Sign In</Text>
       <View className='flex content-center items-center justify-center h-36 py-4'>
