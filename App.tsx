@@ -3,15 +3,16 @@ import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import Routes from './src/routes/Routes'
 
-import { MyContextProvider } from './src/contexts/Auth'
+import { AuthProvider } from './src/contexts/Auth'
+
 import './global.css'
 const App = () => {
   return (
     <NavigationContainer>
-      <MyContextProvider>
+      <AuthProvider>
         <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
         <Routes />
-      </MyContextProvider>
+      </AuthProvider>
     </NavigationContainer>
   )
 }

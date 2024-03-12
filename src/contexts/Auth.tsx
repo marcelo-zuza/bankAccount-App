@@ -1,55 +1,57 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-
-interface MyContextProps {
-  id: number;
-  setId: (newId: number) => void;
-  name: string;
-  setName: (newName: string) => void;
-  email: string;
-  setEmail: (newEmail: string) => void;
-  password: string;
-  setPassword: (newPassword: string) => void;
-  checkPassword: string;
-  setCheckPassword: (newCheckPassword: string) => void;
+// src/AuthContext.tsx
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { User, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+import { firebaseAuth } from '../firebase/firebaseAuth';
+interface AuthContextType {
+  currentUser: User | null;
+  signUp: (email: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<void>;
+  signOutUser: () => Promise<void>;
 }
 
-const MyContext = createContext<MyContextProps | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-interface MyContextProviderProps {
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
+
+interface AuthProviderProps {
   children: ReactNode;
 }
 
-export const MyContextProvider: React.FC<MyContextProviderProps> = ({ children }) => {
-    const [id, setId] = useState<number>(1);
-  const [name, setName] = useState<string>('Zé maria');
-  const [email, setEmail] = useState<string>('z@z.com');
-  const [password, setPassword] = useState<string>('123');
-  const [checkPassword, setCheckPassword] = useState<string>('123');
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  const contextValue: MyContextProps = {
-    name: name,
-    email: email,
-    password: password,
-    checkPassword: checkPassword,
-    id: id,
-    setId: setId,
-    setName: setName,
-    setEmail: setEmail,
-    setPassword: setPassword,
-    setCheckPassword: setCheckPassword
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
+      setCurrentUser(user);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const signUp = async (email: string, password: string) => {
+    await createUserWithEmailAndPassword(firebaseAuth, email, password);
   };
 
-  return (
-    <MyContext.Provider value={contextValue}>
-      {children}
-    </MyContext.Provider>
-  );
-};
+  const signIn = async (email: string, password: string) => {
+    await signInWithEmailAndPassword(firebaseAuth, email, password);
+  };
 
-export const useMyContext = () => {
-  const context = useContext(MyContext);
-  if (!context) {
-    throw new Error('useMyContext deve ser usado dentro de um MyContextProvider');
-  }
-  return context;
+  const signOutUser = async () => {
+    await signOut(firebaseAuth);
+  };
+
+  const value = {
+    currentUser,
+    signUp,
+    signIn,
+    signOutUser,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
